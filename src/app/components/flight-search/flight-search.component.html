@@ -1,0 +1,74 @@
+<form [formGroup]="flightForm" class="center m-5">
+
+    <div class="row">
+        <div class="mb-3 col-md-6">
+            <label for="origin" class="form-label">Origin</label>
+            <input type="text" class="form-control" id="origin" aria-describedby="Origin" formControlName="origin"
+                required>
+        </div>
+
+        <div class="mb-3 col-md-6">
+            <label for="destination" class="form-label">Destination</label>
+            <input type="text" class="form-control" id="destination" aria-describedby="Destination"
+                formControlName="destination" required>
+        </div>
+
+        <div class="m-0 col-md-6 row center">
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="oneway" formControlName="tripType" value="oneway" checked>Oneway
+                <label class="form-check-label" for="oneway"></label>
+            </div>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="roundtrip" formControlName="tripType" value="roundtrip">Round trip
+                <label class="form-check-label" for="roundtrip"></label>
+            </div>
+        </div>
+
+
+        <div class="mb-3 col-md-6">
+            <label for="currency" class="form-label">Currency</label>
+            <select class="form-select" aria-label="Default select example" formControlName="currency">
+                <option selected>Select currency</option>
+                <option value="USD">USD</option>
+                <option value="COP">COP</option>
+                <option value="EUR">EUR</option>
+            </select>
+        </div>
+
+    </div>
+    <br><br>
+    <div class="d-grid gap-2 col-4 mx-auto">
+        <!-- [disabled]="!flightForm.valid" -->
+        <button type="button" class="btn btn-primary" (click)="search()">Search</button>
+        <button type="button" class="btn btn-light" (click)="clear()">Clear</button>
+    </div>
+
+    <div *ngIf="journeys.length > 0" class="center m-5">
+        <div>
+            <h2> {{ flightForm.get('tripType')?.value }} flights available:</h2>
+        </div>
+
+        <div *ngFor="let journey of journeys">
+            <div class="card text-center m-5">
+                <div class="card-body">
+                    <h5 class="card-title">{{ journey.origin }} -> {{ journey.destination }}</h5>
+                </div>
+                <div class="card-footer text-body-secondary">
+                    Total Price: {{ journey.price }} {{ flightForm.get('currency')?.value }}
+                </div>
+                <div *ngFor="let flight of journey.flights">
+                    <p>
+                        Flight: {{ flight.transport.flightCarrier }} {{ flight.transport.flightNumber }}<br>
+                        {{ flight.origin }} -> {{ flight.destination }}<br>
+                        Price: {{ flight.price }} {{ flightForm.get('currency')?.value }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="journeys.length === 0 && flightForm.valid">
+        <p>No flights found for the selected criteria</p>
+    </div>
+
+</form>
