@@ -25,3 +25,15 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Description
+
+The DCXAir project was developed with the following characteristics:
+
+It allows you to consult travel routes by entering an origin, a destination, selecting the option of one-way flight or round-trip flights, and selecting the currency in which you want to display the prices.
+
+Airport information is obtained from the cities entered by the user.
+
+Having the route data shows additional information about the airports.
+
+The currency conversion is carried out with the support of an external service; the most used currencies are listed in the options.
