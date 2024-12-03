@@ -1,5 +1,6 @@
 <form [formGroup]="flightForm" class="center m-5">
 
+    <h1 class="text-center">DCXAir</h1> <br>
     <div class="row">
         <div class="mb-3 col-md-6">
             <label for="origin" class="form-label">Origin</label>
@@ -15,11 +16,13 @@
 
         <div class="m-0 col-md-6 row center">
             <div class="form-check">
-                <input type="radio" class="form-check-input" id="oneway" formControlName="tripType" value="oneway" checked>Oneway
+                <input type="radio" class="form-check-input" id="oneway" formControlName="tripType" value="oneway"
+                    checked (change)="clear()">Oneway
                 <label class="form-check-label" for="oneway"></label>
             </div>
             <div class="form-check">
-                <input type="radio" class="form-check-input" id="roundtrip" formControlName="tripType" value="roundtrip">Round trip
+                <input type="radio" class="form-check-input" id="roundtrip" formControlName="tripType" value="roundtrip"
+                    (change)="clear()">Round trip
                 <label class="form-check-label" for="roundtrip"></label>
             </div>
         </div>
@@ -27,48 +30,62 @@
 
         <div class="mb-3 col-md-6">
             <label for="currency" class="form-label">Currency</label>
-            <select class="form-select" aria-label="Default select example" formControlName="currency">
+            <select class="form-select" aria-label="Default select example" formControlName="currency"
+                (change)="clear()">
                 <option selected>Select currency</option>
-                <option value="USD">USD</option>
-                <option value="COP">COP</option>
-                <option value="EUR">EUR</option>
+                <option value="USD">USD (Dólar americano)</option>
+                <option value="COP">COP (Peso colombiano)</option>
+                <option value="EUR">EUR (Euro)</option>
+                <option value="GBP">GBP (Libra esterlina)</option>
+                <option value="CHF">CHF (Franco suizo)</option>
             </select>
         </div>
 
     </div>
     <br><br>
     <div class="d-grid gap-2 col-4 mx-auto">
-        <!-- [disabled]="!flightForm.valid" -->
-        <button type="button" class="btn btn-primary" (click)="search()">Search</button>
+        <button type="button" class="btn btn-primary" (click)="search()" [disabled]="!flightForm.valid">Search</button>
+        <button type="button" class="btn btn-info" (click)="getAll()">Get all</button>
         <button type="button" class="btn btn-light" (click)="clear()">Clear</button>
     </div>
 
     <div *ngIf="journeys.length > 0" class="center m-5">
         <div>
-            <h2> {{ flightForm.get('tripType')?.value }} flights available:</h2>
+            <h2 class="text-capitalize"> {{ flightForm.get('tripType')?.value }} flights available:</h2>
         </div>
 
         <div *ngFor="let journey of journeys">
-            <div class="card text-center m-5">
-                <div class="card-body">
-                    <h5 class="card-title">{{ journey.origin }} -> {{ journey.destination }}</h5>
+            <div class="card border-primary text-center m-5">
+                <div class="card-body bg-info">
+                    <h5 class="card-title fw-bold">{{ journey.origin }} -> {{ journey.destination }}</h5>
                 </div>
                 <div class="card-footer text-body-secondary">
-                    Total Price: {{ journey.price }} {{ flightForm.get('currency')?.value }}
+                    Total Price: {{ formatPrice(journey.price) }} {{ flightForm.get('currency')?.value }}
                 </div>
                 <div *ngFor="let flight of journey.flights">
-                    <p>
-                        Flight: {{ flight.transport.flightCarrier }} {{ flight.transport.flightNumber }}<br>
-                        {{ flight.origin }} -> {{ flight.destination }}<br>
-                        Price: {{ flight.price }} {{ flightForm.get('currency')?.value }}
-                    </p>
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Flight: <b>{{ flight.transport.flightCarrier }} {{ flight.transport.flightNumber }}</b>
+                            </p><br>
+                            <p><b>Origin: {{ flight.origin }} - {{ flight.originInfo.city }}
+                                    ({{flight.originInfo.country }})</b><br>
+                                AirportName: {{ flight.originInfo.airportName }}</p>
+                            <br>
+                            <p><b>Destination: {{ flight.destination }} - {{ flight.destinationInfo.city }}
+                                    ({{flight.destinationInfo.country }})</b><br>
+                                AirportName: {{ flight.destinationInfo.airportName }}</p>
+                            <br>
+                            Price: {{ formatPrice(flight.price) }} {{ flightForm.get('currency')?.value }}
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div *ngIf="journeys.length === 0 && flightForm.valid">
-        <p>No flights found for the selected criteria</p>
+    <div *ngIf="errorMessage != ''" class="mt-3 text-center" style="color: red">
+        <p>{{ errorMessage }}</p>
     </div>
 
 </form>
